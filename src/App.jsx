@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import { pizzaData } from "./data";
 
 export default function App() {
   return (
-    <div>
+    <div className="contaier">
       <Header />
       <Menu />
       <Footer />
@@ -10,38 +11,75 @@ export default function App() {
   )
 }
 
-function Pizza() {
-  return (
-    <div>
-      <img src="pizzas/spinaci.jpg" alt="Pizza spinaci" />
-      <h2>Pizza spinaci</h2>
-      <p>Toomato, mozarella, spinach, and ricotta cheese</p>
-    </div>
-  );
-}
 
 function Header() {
-  return <h1>Pizza Menu Application</h1>;
+  return (
+    <header className="header">
+      <h1>Pizza Menu App</h1>
+    </header>
+);
 }
 
 function Menu() {
+  const pizzas = pizzaData;
+  const numPizzas = pizzas.length;
   return (
-    <div>
+    <main className="menu">
       <h2>Our Menu</h2>
-      <Pizza />
-    </div>
+      {numPizzas > 0 && (
+      <ul className="pizzas">
+      {pizzaData.map((pizza) => (
+        <Pizza pizzaObj={pizza} key={pizza.name}/>
+        ))}
+      </ul>
+      )}
+    </main>
   )
 }
 
-function Footer() {
-  const [time, setTime] = useState(new Date().toLocaleTimeString());
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTime(new Date().toLocaleTimeString());
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-  return <footer>{time} We are Close now!!! My friend</footer>
+function Pizza(props) {
+  return (
+    <li className="pizza">
+      <img src={props.pizzaObj.photoName} alt={props.pizzaObj.name} />
+      <div>
+        <h3>{props.pizzaObj.name}</h3>
+        <p>{props.pizzaObj.ingredients}</p>
+        <span>{props.pizzaObj.price}</span>
+      </div>
+    </li>
+  );
 }
+
+function Footer() {
+  // const [time, setTime] = useState(new Date().toLocaleTimeString());
+  
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setTime(new Date().toLocaleTimeString());
+  //   }, 1000);
+
+  //   return () => clearInterval(interval);
+  // }, []);
+  // return (
+  //   <footer className="footer">
+  //     {time} We are Close now!!! My friend
+  //   </footer>
+  // );
+  const hour = new Date().getHours();
+  const openHour = 12;
+  const closeHour = 22;
+  const isOpen = hour >= openHour && hour <= closeHour;
+
+  return (
+    <footer className="footer">
+      {isOpen && (
+        <div className="order"> 
+            <p>
+              We're open until {closeHour}:00. Come visit us or order online.
+            </p>
+            <button className="btn">Order</button>
+        </div>
+      )}
+    </footer>
+  )
+} 
